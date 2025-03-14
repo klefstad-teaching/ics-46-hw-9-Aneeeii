@@ -5,6 +5,7 @@
 #include <set>
 #include <queue>
 #include <set>
+#include <fstream>
 
 void error(std::string word1, std::string word2, std::string msg) {
     std::cout << word1 << " " << word2 << msg << std::endl;
@@ -49,4 +50,11 @@ const std::string& end_word, std::set<std::string>& word_list) {
             break;
     }
     return ladder_queue;
+}
+
+void load_words(std::set<std::string>& word_list, const std::string& file_name) {
+    word_list.clear();
+    std::ifstream in(file_name);
+    for (std::string word; (in >> word);)
+        word_list.push(word);
 }
