@@ -33,28 +33,43 @@ bool is_adjacent(const std::string& word1, const std::string& word2) {
 }
 
 std::vector<std::string> generate_word_ladder(const std::string& begin_word,
-const std::string& end_word, std::set<std::string>& word_list) {
-    std::queue<std::string> ladder_queue;
-    ladder_queue.push(begin_word);
+const std::string& end_word, const std::set<std::string>& word_list) {
+    std::queue<std::vector<std::string>> ladder_queue;
     std::set<std::string> visited;
+    std::vector<std::string> first = {begin_word};
+
+    ladder_queue.push(first);
     visited.insert(begin_word);
-    for (std::string word : word_list) {
-        std::string last_word = ladder_queue.back();
-        if (is_adjacent(word, last_word)) {
-            if (visited.find(word) == visited.end()) {
-                visited.insert(word);
-                ladder_queue.push(word);
+
+    while (!ladder_queue.empty()) {
+        std::vector<std::string> ladder = ladder_queue.front();
+        ladder_queue.pop();
+        std::string last_word = ladder.back();
+        for (std::string word : word_list) {
+            if (is_adjacent(last_word, word)) {
+                if (visited.find(word) == visited.end()) {
+                    visited.insert(word);
+                    std::vector<std::string> new_ladder = ladder;
+                    new_ladder.push_back(word);
+                    if (word == end_word)   
+                        return new_ladder;
+                    ladder_queue.push(new_ladder);
+                }
             }
         }
-        if (ladder_queue.back() == end_word)
-            break;
     }
-    return ladder_queue;
+
+    return {};
 }
 
 void load_words(std::set<std::string>& word_list, const std::string& file_name) {
     word_list.clear();
     std::ifstream in(file_name);
     for (std::string word; (in >> word);)
-        word_list.push(word);
+        word_list.insert(word);
+}
+
+void print_word_ladder(const std::vector<std::string>& ladder) {
+    for (std::string word : ladder)
+        std::cout << word << " ";
 }
