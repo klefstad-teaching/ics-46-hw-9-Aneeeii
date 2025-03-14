@@ -7,6 +7,8 @@
 #include <set>
 #include <fstream>
 
+#define my_assert(e) {std::cout << #e << ((e) ? " passed" : " failed") << std::endl;}
+
 void error(std::string word1, std::string word2, std::string msg) {
     std::cout << word1 << " " << word2 << msg << std::endl;
 }
@@ -72,4 +74,15 @@ void load_words(std::set<std::string>& word_list, const std::string& file_name) 
 void print_word_ladder(const std::vector<std::string>& ladder) {
     for (std::string word : ladder)
         std::cout << word << " ";
+}
+
+void verify_word_ladder() {
+    std::set<std::string> word_list;
+    load_words(word_list, "src/words.txt");
+    my_assert(generate_word_ladder("cat", "dog", word_list).size() == 4);
+    my_assert(generate_word_ladder("marty", "curls", word_list).size() == 6);
+    my_assert(generate_word_ladder("code", "data", word_list).size() == 6);
+    my_assert(generate_word_ladder("work", "play", word_list).size() == 6);
+    my_assert(generate_word_ladder("sleep", "awake", word_list).size() == 8);
+    my_assert(generate_word_ladder("car", "cheat", word_list).size() == 4);
 }
