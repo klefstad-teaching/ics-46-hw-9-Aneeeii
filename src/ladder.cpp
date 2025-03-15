@@ -17,9 +17,9 @@ int difference(std::string word1, std::string word2) {
     return abs(static_cast<int>(word1.length()) - static_cast<int>(word2.length()));
 }
 
-bool is_adjacent(const std::string& word1, const std::string& word2) {
-    std::string longer = word1.length() > word2.length()? word1 : word2;
-    std::string shorter = word1 == longer ? word2 : word1;
+bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
+    std::string longer = str1.length() > str2.length()? str1 : str2;
+    std::string shorter = str1 == longer ? str2 : str1;
     std::vector<char> check;
     for (char c : longer)
         check.push_back(c);
@@ -29,13 +29,21 @@ bool is_adjacent(const std::string& word1, const std::string& word2) {
         if (found != check.end())
             check.erase(found);
     }
-    if (check.size() > 1)
+    if (static_cast<int>(check.size()) > d)
         return false;
     return true;
 }
 
+bool is_adjacent(const std::string& word1, const std::string& word2) {
+    return edit_distance_within(word1, word2, 1);
+}
+
 std::vector<std::string> generate_word_ladder(const std::string& begin_word,
 const std::string& end_word, const std::set<std::string>& word_list) {
+    if (end_word == begin_word) {
+        error(begin_word, end_word, "are the same word");
+        return {};
+    }
     std::queue<std::vector<std::string>> ladder_queue;
     std::set<std::string> visited;
     std::vector<std::string> first = {begin_word};
