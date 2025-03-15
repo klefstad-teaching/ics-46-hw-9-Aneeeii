@@ -3,7 +3,7 @@
 #include <queue>
 
 // G is a vector of vectors of edges
-std::vector<int> dijkstras_shortest_path(const Graph& G, int source, std::vector<int>& previous) {
+std::vector<int> dijkstra_shortest_path(const Graph& G, int source, std::vector<int>& previous) {
     std::vector<int> distances(G.numVertices, INF);
     std::vector<bool> visited(G.numVertices, false);
     distances[source] = 0;
