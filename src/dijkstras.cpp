@@ -29,5 +29,10 @@ std::vector<int> dijkstras_shortest_path(const Graph& G, int source, std::vector
 }
 
 std::vector<int> extract_shortest_path(const std::vector<int>& distances, const std::vector<int>& previous, int destination) {
-    
+    std::vector<int> result;
+    if (distances[destination] == INF)
+        return {};
+    for (int current = destination; current != -1; current = previous[current])
+        result.insert(result.begin(), current);
+    return result;
 }
