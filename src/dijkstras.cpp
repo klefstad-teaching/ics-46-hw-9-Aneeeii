@@ -36,3 +36,9 @@ std::vector<int> extract_shortest_path(const std::vector<int>& distances, const 
         result.insert(result.begin(), current);
     return result;
 }
+
+void print_path(const std::vector<int>& v, int total) {
+    for (int i = 0; i < total; ++i) {
+        std::cout << v[i] << " ";
+    }
+}
