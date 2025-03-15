@@ -87,7 +87,7 @@ void print_word_ladder(const std::vector<std::string>& ladder) {
     if (ladder.empty())
         std::cout << "No word ladder found.\n";
     else {
-        std::cout << "Word ladder found: "
+        std::cout << "Word ladder found: ";
         for (std::string word : ladder)
             std::cout << word << " ";
         std::cout << std::endl;
