@@ -19,7 +19,7 @@ int difference(std::string word1, std::string word2) {
 
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
     if (difference(str1, str2) > d) return false;
-    int m = str1.length()
+    int m = str1.length();
     int n = str2.length();
     if (m > n) return edit_distance_within(str2, str1, d);
     std::vector<int> prev(n + 1), curr(n + 1);
