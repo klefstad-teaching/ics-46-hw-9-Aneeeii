@@ -19,23 +19,28 @@ int difference(std::string word1, std::string word2) {
 
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
     if (difference(str1, str2) > d) return false;
-    
-    int m = str1.length();
+    int m = str1.length()
     int n = str2.length();
-    std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1, 0));
+    if (m > n) return edit_distance_within(str2, str1, d);
+    std::vector<int> prev(n + 1), curr(n + 1);
 
-    for (int i = 0; i <= m; i++) dp[i][0] = i;
-    for (int j = 0; j <= n; j++) dp[0][j] = j;
-
+    for (int j = 0; j <= n; j++)
+        prev[j] = j;
     for (int i = 1; i <= m; i++) {
+        curr[0] = i;
+        int minVal = curr[0];
         for (int j = 1; j <= n; j++) {
             if (str1[i - 1] == str2[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
+                curr[j] = prev[j - 1];
             else
-                dp[i][j] = 1 + std::min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});
+                curr[j] = 1 + std::min({prev[j], curr[j - 1], prev[j - 1]});
+            minVal = std::min(minVal, curr[j]);
         }
+        if (minVal > d) return false;
+        std::swap(prev, curr);
     }
-    return dp[m][n] <= d;
+
+    return prev[n] <= d;
 }
 
 bool is_adjacent(const std::string& word1, const std::string& word2) {
@@ -97,6 +102,10 @@ void print_word_ladder(const std::vector<std::string>& ladder) {
 void verify_word_ladder() {
     std::set<std::string> word_list;
     load_words(word_list, "src/words.txt");
+    if (word_list.empty())
+        std::cout << "Wordlist not filled" << std::endl;
+    else
+        std::cout << "Wordlist is filled" << std::endl;
     my_assert(generate_word_ladder("cat", "dog", word_list).size() == 4);
     my_assert(generate_word_ladder("marty", "curls", word_list).size() == 6);
     my_assert(generate_word_ladder("code", "data", word_list).size() == 6);
