@@ -18,6 +18,7 @@ int difference(std::string word1, std::string word2) {
 }
 
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
+   
     int difference_count = 0;
     int m = str1.length();
     int n = str2.length();
@@ -31,9 +32,9 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
             if (difference_count > 1) return false;
             if (m > n) ++i;
             else if (n > m) ++j;
-            else{++i; ++j;}
+            else {++i; ++j;}
         }
-        else {++i;++j;}
+        else {++i; ++j;}
     }
     return difference_count <= d;
 }
@@ -48,6 +49,8 @@ const std::string& end_word, const std::set<std::string>& word_list) {
         error(begin_word, end_word, "are the same word");
         return {};
     }
+    if (word_list.find(end_word) == word_list.end())
+        return {};
     std::queue<std::vector<std::string>> ladder_queue;
     std::unordered_set<std::string> visited;
 
