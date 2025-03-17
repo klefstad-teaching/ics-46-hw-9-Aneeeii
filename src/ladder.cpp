@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <set>
+#include <unordered_set>
 #include <queue>
 #include <set>
 #include <fstream>
@@ -21,26 +21,24 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
     if (difference(str1, str2) > d) return false;
     int m = str1.length();
     int n = str2.length();
-    if (m > n) return edit_distance_within(str2, str1, d);
-    std::vector<int> prev(n + 1), curr(n + 1);
+    int cost = 0;
+    std::vector<std::vector<int>> dp(m + 1, vector<int>(n + 1));
 
-    for (int j = 0; j <= n; j++)
-        prev[j] = j;
-    for (int i = 1; i <= m; i++) {
-        curr[0] = i;
-        int minVal = curr[0];
-        for (int j = 1; j <= n; j++) {
-            if (str1[i - 1] == str2[j - 1])
-                curr[j] = prev[j - 1];
+    for (int i = 0; i <= m; ++i)
+        dp[i][0] = i;
+    for (int j = 0; j <= n; ++j)
+        dp[0][j] = j;
+
+    for (int j = 1; j <= n; ++j) {
+        for (int i = 1; i <= m; ++i) {
+            if (str1[i] == str2[j])
+                cost = 0;
             else
-                curr[j] = 1 + std::min({prev[j], curr[j - 1], prev[j - 1]});
-            minVal = std::min(minVal, curr[j]);
+                cost = 1;
+            dp[i][j] = std::min({dp[i-1][j] + 1, dp[i][j-1] +1, dp[i-1][j-1] + cost});
         }
-        if (minVal > d) return false;
-        std::swap(prev, curr);
     }
-
-    return prev[n] <= d;
+    return dp[m][n] <= d;
 }
 
 bool is_adjacent(const std::string& word1, const std::string& word2) {
@@ -54,10 +52,9 @@ const std::string& end_word, const std::set<std::string>& word_list) {
         return {};
     }
     std::queue<std::vector<std::string>> ladder_queue;
-    std::set<std::string> visited;
-    std::vector<std::string> first = {begin_word};
+    std::unordered_set<std::string> visited;
 
-    ladder_queue.push(first);
+    ladder_queue.push({begin_word});
     visited.insert(begin_word);
 
     while (!ladder_queue.empty()) {
@@ -102,10 +99,6 @@ void print_word_ladder(const std::vector<std::string>& ladder) {
 void verify_word_ladder() {
     std::set<std::string> word_list;
     load_words(word_list, "src/words.txt");
-    if (word_list.empty())
-        std::cout << "Wordlist not filled" << std::endl;
-    else
-        std::cout << "Wordlist is filled" << std::endl;
     my_assert(generate_word_ladder("cat", "dog", word_list).size() == 4);
     my_assert(generate_word_ladder("marty", "curls", word_list).size() == 6);
     my_assert(generate_word_ladder("code", "data", word_list).size() == 6);
