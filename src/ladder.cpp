@@ -18,27 +18,24 @@ int difference(std::string word1, std::string word2) {
 }
 
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
-    if (difference(str1, str2) > d) return false;
+    int difference_count = 0;
     int m = str1.length();
     int n = str2.length();
-    int cost = 0;
-    std::vector<std::vector<int>> dp(m + 1, vector<int>(n + 1));
+    if (difference(str1, str2) > 1) return false;
 
-    for (int i = 0; i <= m; ++i)
-        dp[i][0] = i;
-    for (int j = 0; j <= n; ++j)
-        dp[0][j] = j;
-
-    for (int j = 1; j <= n; ++j) {
-        for (int i = 1; i <= m; ++i) {
-            if (str1[i] == str2[j])
-                cost = 0;
-            else
-                cost = 1;
-            dp[i][j] = std::min({dp[i-1][j] + 1, dp[i][j-1] +1, dp[i-1][j-1] + cost});
+    int i = 0;
+    int j = 0;
+    while(i < m && j < n){
+        if (str1[i] != str2[j]){
+            ++difference_count;
+            if (difference_count > 1) return false;
+            if (m > n) ++i;
+            else if (n > m) ++j;
+            else{++i; ++j;}
         }
+        else {++i;++j;}
     }
-    return dp[m][n] <= d;
+    return difference_count <= d;
 }
 
 bool is_adjacent(const std::string& word1, const std::string& word2) {
